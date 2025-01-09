@@ -2433,3 +2433,34 @@
 {"level":"info","message":"Recebido GET para /api/registros?data=2025-01-07"}
 {"level":"info","message":"Recebido GET para /api/registros?data=2025-01-09"}
 {"level":"info","message":"Recebido GET para /"}
+{"level":"info","message":"Servidor rodando em http://localhost:80"}
+{"level":"info","message":"Recebido GET para /"}
+{"level":"info","message":"Recebido GET para /styles.css"}
+{"level":"info","message":"Recebido GET para /script.js"}
+{"level":"info","message":"Recebido GET para /api/registros?data=2025-01-09"}
+{"level":"info","message":"Recebido GET para /api/historico-peso"}
+{"level":"info","message":"Recebido GET para /api/resumo-diario?data=2025-01-09"}
+{"level":"info","message":"Recebido GET para /"}
+{"level":"info","message":"Recebido GET para /script.js"}
+{"level":"info","message":"Recebido GET para /styles.css"}
+{"level":"info","message":"Recebido GET para /api/registros?data=2025-01-09"}
+{"level":"info","message":"Recebido GET para /api/historico-peso"}
+{"level":"info","message":"Recebido GET para /api/resumo-diario?data=2025-01-09"}
+{"level":"info","message":"Recebido POST para /api/alimentos"}
+{"level":"info","message":"Processando alimento: ovo"}
+{"level":"info","message":"Tradu��o: ovo -> egg"}
+{"level":"info","message":"Buscando informa��es nutricionais para: egg"}
+{"level":"error","message":"Erro ao registrar alimento: duplicate key value violates unique constraint \"unique_nome_alimento\""}
+{"level":"info","message":"Servidor rodando em http://localhost:80"}
+{"level":"info","message":"Servidor rodando em http://localhost:80"}
+{"level":"info","message":"Recebido GET para /"}
+{"level":"info","message":"Recebido GET para /script.js"}
+{"level":"info","message":"Recebido GET para /styles.css"}
+{"level":"info","message":"Recebido GET para /api/registros?data=2025-01-09"}
+{"level":"info","message":"Recebido GET para /api/historico-peso"}
+{"level":"info","message":"Recebido GET para /api/resumo-diario?data=2025-01-09"}
+{"level":"info","message":"Recebido POST para /api/alimentos"}
+{"level":"info","message":"Processando alimento: ovo"}
+{"level":"info","message":"Tradu��o: ovo -> egg"}
+{"level":"info","message":"Recebido GET para /api/registros?data=2025-01-09"}
+{"level":"info","message":"Recebido GET para /api/resumo-diario?data=2025-01-09"}

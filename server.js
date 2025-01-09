@@ -117,7 +117,7 @@ app.get('/', (req, res) => {
 // API Endpoints
 app.post('/api/alimentos', async (req, res) => {
     const { alimento, peso, data, hora } = req.body;
-    
+
     try {
         const alimentoSemEspeciais = removerCaracteresEspeciais(alimento);
         logger.info(`Processando alimento: ${alimentoSemEspeciais}`);
@@ -127,25 +127,40 @@ app.post('/api/alimentos', async (req, res) => {
             return res.status(500).json({ erro: 'Erro ao traduzir o nome do alimento' });
         }
 
-        const infoNutricional = await buscarInformacoesNutricionais(nomeIngles);
-        if (!infoNutricional) {
-            return res.status(500).json({ erro: 'Erro ao buscar informações nutricionais' });
-        }
-
-        const resultInsercao = await pool.query(
-            `INSERT INTO alimentos (nome, nome_en, proteinas, carboidratos, gorduras) 
-             VALUES ($1, $2, $3, $4, $5) 
-             RETURNING id`,
-            [alimento, nomeIngles, infoNutricional.proteinas, infoNutricional.carboidratos, infoNutricional.gorduras]
+        // Verificar se o alimento já existe
+        let alimentoId;
+        const alimentoExistente = await pool.query(
+            `SELECT id FROM alimentos WHERE nome = $1`,
+            [alimento]
         );
 
-        await registrarAlimentacao(resultInsercao.rows[0].id, peso, data, hora, res);
+        if (alimentoExistente.rows.length > 0) {
+            // Alimento já existe
+            alimentoId = alimentoExistente.rows[0].id;
+        } else {
+            // Inserir novo alimento
+            const infoNutricional = await buscarInformacoesNutricionais(nomeIngles);
+            if (!infoNutricional) {
+                return res.status(500).json({ erro: 'Erro ao buscar informações nutricionais' });
+            }
+
+            const resultInsercao = await pool.query(
+                `INSERT INTO alimentos (nome, nome_en, proteinas, carboidratos, gorduras) 
+                 VALUES ($1, $2, $3, $4, $5) 
+                 RETURNING id`,
+                [alimento, nomeIngles, infoNutricional.proteinas, infoNutricional.carboidratos, infoNutricional.gorduras]
+            );
+
+            alimentoId = resultInsercao.rows[0].id;
+        }
+
+        // Registrar a alimentação
+        await registrarAlimentacao(alimentoId, peso, data, hora, res);
     } catch (error) {
         logger.error(`Erro ao registrar alimento: ${error.message}`);
         res.status(500).json({ erro: 'Erro ao registrar alimento' });
     }
 });
-
 // Função auxiliar para registrar alimentação
 async function registrarAlimentacao(alimentoId, peso, data, hora, res) {
     try {
