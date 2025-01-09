@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Nutricional</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Controle Nutricional</h1>
+        </header>
+        
+        <!-- Formulário de Registro de Refeição -->
+        <section class="registro-form">
+            <h2>Registrar Refeição</h2>
+            <form id="alimentacaoForm" aria-labelledby="alimentacaoForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="alimento">Alimento:</label>
+                        <input type="text" id="alimento" name="alimento" required aria-required="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="peso">Peso (gramas):</label>
+                        <input type="number" id="peso" name="peso" required min="1" aria-required="true">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data">Data:</label>
+                        <input type="date" id="data" name="data" required aria-required="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hora">Hora:</label>
+                        <input type="time" id="hora" name="hora" required aria-required="true">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">Registrar Refeição</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Controle de Peso -->
+        <section class="peso-tracking">
+            <h2>Controle de Peso</h2>
+            <div class="peso-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peso-atual">Peso Atual (kg):</label>
+                        <input type="number" id="peso-atual" name="peso-atual" step="0.1" required aria-required="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data-peso">Data:</label>
+                        <input type="date" id="data-peso" name="data-peso" required aria-required="true">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="registrar-peso">Registrar Peso</button>
+                    </div>
+                </div>
+            </div>
+            <div class="peso-info">
+                <div class="peso-card atual">
+                    <h3>Peso Atual</h3>
+                    <p><span id="ultimo-peso">0.0</span> kg</p>
+                </div>
+                <div class="peso-card variacao">
+                    <h3>Variação</h3>
+                    <p><span id="variacao-peso">0.0</span> kg</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <h3>Histórico de Peso</h3>
+                <table id="pesoTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th> <!-- Nova coluna para o ID -->
+                            <th>Data</th>
+                            <th>Peso (kg)</th>
+                            <th>Variação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Os dados serão inseridos via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Resumo do Dia -->
+        <section class="resumo">
+            <h2>Resumo do Dia</h2>
+            <div class="macros-container">
+                <div class="macro-card proteinas">
+                    <h3>Proteínas</h3>
+                    <p><span id="total-proteinas">0</span>g</p>
+                </div>
+                <div class="macro-card carboidratos">
+                    <h3>Carboidratos</h3>
+                    <p><span id="total-carboidratos">0</span>g</p>
+                </div>
+                <div class="macro-card gorduras">
+                    <h3>Gorduras</h3>
+                    <p><span id="total-gorduras">0</span>g</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registros de Refeições -->
+        <section class="registros">
+            <h2>Refeições Registradas</h2>
+            <div class="filtro-data">
+                <label for="filtro-data">Selecionar Data:</label>
+                <input type="date" id="filtro-data" name="filtro-data">
+                <button type="button" id="btn-hoje" class="btn-hoje">Hoje</button>
+            </div>
+
+            <div class="table-container">
+                <table id="registrosTable">
+                    <thead>
+                        <tr>
+                            <th>Alimento</th>
+                            <th>Hora</th>
+                            <th>Peso (g)</th>
+                            <th>Proteínas (g/100g)</th>
+                            <th>Proteínas Total</th>
+                            <th>Carboidratos (g/100g)</th>
+                            <th>Carboidratos Total</th>
+                            <th>Gorduras (g/100g)</th>
+                            <th>Gorduras Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dados serão inseridos via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Desenvolvido para controle nutricional - 2025</p>
+        </footer>
+    </div>
+
+    <!-- Carregamento e Notificação -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div id="notification" class="notification" style="display: none;">
+        <p id="notification-message"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
