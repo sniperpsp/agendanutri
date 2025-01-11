@@ -18,7 +18,7 @@ function configurarDataHoraAtual() {
     document.getElementById('hora').value = horaAtual;
 }
 
-// Formulário de alimentação
+// Formul?rio de alimenta??o
 document.getElementById('alimentacaoForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -37,22 +37,22 @@ document.getElementById('alimentacaoForm').addEventListener('submit', async (e) 
             body: JSON.stringify(formData)
         });
 
-        if (!response.ok) throw new Error('Erro ao registrar refeição');
+        if (!response.ok) throw new Error('Erro ao registrar refei??o');
         
         const data = await response.json();
         console.log('Sucesso:', data);
 
-        // Limpar formulário
+        // Limpar formul?rio
         document.getElementById('alimento').value = '';
         document.getElementById('peso').value = '';
 
         // Atualizar registros
         carregarRegistrosPorData(formData.data);
         atualizarResumoDiario(formData.data);
-        mostrarNotificacao('Refeição registrada com sucesso!', 'sucesso');
+        mostrarNotificacao('Refei??o registrada com sucesso!', 'sucesso');
     } catch (error) {
         console.error('Erro:', error);
-        mostrarNotificacao('Erro ao registrar refeição', 'erro');
+        mostrarNotificacao('Erro ao registrar refei??o', 'erro');
     } finally {
         ocultarLoading();
     }
@@ -108,11 +108,11 @@ function atualizarTabelaRegistros(registros) {
     });
 }
 
-// Atualizar resumo diário
+// Atualizar resumo di?rio
 async function atualizarResumoDiario(data) {
     try {
         const response = await fetch(`/api/resumo-diario?data=${data}`);
-        if (!response.ok) throw new Error('Erro ao carregar resumo diário');
+        if (!response.ok) throw new Error('Erro ao carregar resumo di?rio');
         const resumo = await response.json();
 
         document.getElementById('total-proteinas').textContent = resumo.total_proteinas || '0';
@@ -120,7 +120,7 @@ async function atualizarResumoDiario(data) {
         document.getElementById('total-gorduras').textContent = resumo.total_gorduras || '0';
     } catch (error) {
         console.error('Erro:', error);
-        mostrarNotificacao('Erro ao carregar resumo diário', 'erro');
+        mostrarNotificacao('Erro ao carregar resumo di?rio', 'erro');
     }
 }
 
@@ -142,9 +142,9 @@ document.getElementById('registrar-peso').addEventListener('click', async () => 
         const resultado = await response.json(); // Obter a resposta da API
         document.getElementById('peso-atual').value = '';
 
-        // Atualizar o card de peso atual com o último peso inserido
+        // Atualizar o card de peso atual com o ?ltimo peso inserido
         document.getElementById('ultimo-peso').textContent = resultado.ultimoPeso.peso_kg; // Atualiza o peso atual
-        document.getElementById('variacao-peso').textContent = resultado.ultimoPeso.variacao; // Atualiza a variação
+        document.getElementById('variacao-peso').textContent = resultado.ultimoPeso.variacao; // Atualiza a varia??o
 
         mostrarNotificacao('Peso registrado com sucesso!', 'sucesso');
     } catch (error) {
@@ -167,17 +167,17 @@ function atualizarCardsPeso(ultimoRegistro) {
     }
 }
 
-// Carregar histórico de peso
+// Carregar hist?rico de peso
 async function carregarHistoricoPeso() {
     try {
         const response = await fetch(`/api/historico-peso`);
-        if (!response.ok) throw new Error('Erro ao carregar histórico de peso');
+        if (!response.ok) throw new Error('Erro ao carregar hist?rico de peso');
         const data = await response.json();
         atualizarTabelaPeso(data.historico);
         atualizarCardsPeso(data.historico[0]);
     } catch (error) {
         console.error('Erro:', error);
-        mostrarNotificacao('Erro ao carregar histórico de peso', 'erro');
+        mostrarNotificacao('Erro ao carregar hist?rico de peso', 'erro');
     }
 }
 
@@ -217,8 +217,8 @@ async function excluirRegistroPeso(id) {
 
         if (!response.ok) throw new Error('Erro ao excluir registro');
         
-        await carregarHistoricoPeso(); // Recarregar o histórico após a exclusão
-        mostrarNotificacao('Registro excluído com sucesso!', 'sucesso');
+        await carregarHistoricoPeso(); // Recarregar o hist?rico ap?s a exclus?o
+        mostrarNotificacao('Registro exclu?do com sucesso!', 'sucesso');
     } catch (error) {
         console.error('Erro:', error);
         mostrarNotificacao('Erro ao excluir registro', 'erro');
@@ -227,7 +227,7 @@ async function excluirRegistroPeso(id) {
     }
 }
 
-// Funções para mostrar e ocultar loading
+// Fun??es para mostrar e ocultar loading
 function mostrarLoading() {
     document.getElementById('loading').style.display = 'block';
 }

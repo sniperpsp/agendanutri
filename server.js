@@ -4,15 +4,16 @@ const path = require('path');
 const winston = require('winston');
 const translate = require('google-translate-api-x');
 const axios = require('axios');
+const fetch = require('node-fetch');
 const { format } = require('date-fns'); // Importando a biblioteca date-fns
 const app = express();
 const port = 80;
 
-// Configuração dos middlewares
+// Configura??o dos middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuração do logger (Winston)
+// Configura??o do logger (Winston)
 const logger = winston.createLogger({
     level: 'info',
     transports: [
@@ -23,16 +24,16 @@ const logger = winston.createLogger({
     ],
 });
 
-// Configuração do PostgreSQL
+// Configura??o do PostgreSQL
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'controle_alimentacao',
-    password: '33557788',
-    port: 5432,
+    user: process.env.DB_USER || 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_NAME || 'controle_alimentacao',
+    password: process.env.DB_PASSWORD || '33557788',
+    port: process.env.DB_PORT || 5432,
 });
 
-// Middleware para logs de requisições
+// Middleware para logs de requisi??es
 app.use((req, res, next) => {
     logger.info(`Recebido ${req.method} para ${req.url}`);
     next();
@@ -52,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
     }
 }));
 
-// Funções auxiliares
+// Fun??es auxiliares
 function removerCaracteresEspeciais(texto) {
     if (!texto) return '';
     return texto
@@ -103,7 +104,7 @@ async function buscarInformacoesNutricionais(nomeIngles) {
         
         return null;
     } catch (error) {
-        logger.error(`Erro ao buscar informações nutricionais: ${error.message}`);
+        logger.error(`Erro ao buscar informa??es nutricionais: ${error.message}`);
         return null;
     }
 }
@@ -127,7 +128,7 @@ app.post('/api/alimentos', async (req, res) => {
             return res.status(500).json({ erro: 'Erro ao traduzir o nome do alimento' });
         }
 
-        // Verificar se o alimento já existe
+        // Verificar se o alimento j? existe
         let alimentoId;
         const alimentoExistente = await pool.query(
             `SELECT id FROM alimentos WHERE nome = $1`,
@@ -135,13 +136,13 @@ app.post('/api/alimentos', async (req, res) => {
         );
 
         if (alimentoExistente.rows.length > 0) {
-            // Alimento já existe
+            // Alimento j? existe
             alimentoId = alimentoExistente.rows[0].id;
         } else {
             // Inserir novo alimento
             const infoNutricional = await buscarInformacoesNutricionais(nomeIngles);
             if (!infoNutricional) {
-                return res.status(500).json({ erro: 'Erro ao buscar informações nutricionais' });
+                return res.status(500).json({ erro: 'Erro ao buscar informa??es nutricionais' });
             }
 
             const resultInsercao = await pool.query(
@@ -154,14 +155,14 @@ app.post('/api/alimentos', async (req, res) => {
             alimentoId = resultInsercao.rows[0].id;
         }
 
-        // Registrar a alimentação
+        // Registrar a alimenta??o
         await registrarAlimentacao(alimentoId, peso, data, hora, res);
     } catch (error) {
         logger.error(`Erro ao registrar alimento: ${error.message}`);
         res.status(500).json({ erro: 'Erro ao registrar alimento' });
     }
 });
-// Função auxiliar para registrar alimentação
+// Fun??o auxiliar para registrar alimenta??o
 async function registrarAlimentacao(alimentoId, peso, data, hora, res) {
     try {
         await pool.query(
@@ -170,10 +171,10 @@ async function registrarAlimentacao(alimentoId, peso, data, hora, res) {
             [alimentoId, peso, data, hora]
         );
 
-        res.status(201).json({ mensagem: 'Alimentação registrada com sucesso' });
+        res.status(201).json({ mensagem: 'Alimenta??o registrada com sucesso' });
     } catch (err) {
-        logger.error(`Erro ao registrar alimentação: ${err.message}`);
-        res.status(500).json({ erro: 'Erro ao registrar alimentação' });
+        logger.error(`Erro ao registrar alimenta??o: ${err.message}`);
+        res.status(500).json({ erro: 'Erro ao registrar alimenta??o' });
     }
 }
 
@@ -195,7 +196,7 @@ app.get('/api/registros', async (req, res) => {
     }
 });
 
-// Carregar resumo diário
+// Carregar resumo di?rio
 app.get('/api/resumo-diario', async (req, res) => {
     const { data } = req.query; // Obter a data da query string
     try {
@@ -209,15 +210,15 @@ app.get('/api/resumo-diario', async (req, res) => {
             WHERE al.data = $1
         `, [data]);
         
-        // Verifica se o resultado é nulo
+        // Verifica se o resultado ? nulo
         if (!resumo.rows[0]) {
             return res.json({ total_proteinas: 0, total_carboidratos: 0, total_gorduras: 0 });
         }
 
         res.json(resumo.rows[0]);
     } catch (error) {
-        logger.error(`Erro ao carregar resumo diário: ${error.message}`);
-        res.status(500).json({ erro: 'Erro ao carregar resumo diário' });
+        logger.error(`Erro ao carregar resumo di?rio: ${error.message}`);
+        res.status(500).json({ erro: 'Erro ao carregar resumo di?rio' });
     }
 });
 
@@ -226,21 +227,21 @@ app.post('/api/registrar-peso', async (req, res) => {
     const { peso, data } = req.body;
 
     try {
-        // Obter o último peso registrado
+        // Obter o ?ltimo peso registrado
         const ultimoPeso = await pool.query('SELECT peso_kg FROM peso ORDER BY data DESC LIMIT 1');
         const pesoAnterior = ultimoPeso.rows.length > 0 ? ultimoPeso.rows[0].peso_kg : 0;
 
-        // Calcular a variação
+        // Calcular a varia??o
         const variacao = peso - pesoAnterior;
 
-        // Inserir o novo peso e a variação
+        // Inserir o novo peso e a varia??o
         await pool.query(
             `INSERT INTO peso (peso_kg, data, variacao) 
              VALUES ($1, $2, $3)`,
             [peso, data, variacao]
         );
 
-        // Retornar o último peso inserido
+        // Retornar o ?ltimo peso inserido
         res.status(201).json({
             mensagem: 'Peso registrado com sucesso',
             ultimoPeso: {
@@ -254,14 +255,14 @@ app.post('/api/registrar-peso', async (req, res) => {
     }
 });
 
-// Carregar histórico de peso
+// Carregar hist?rico de peso
 app.get('/api/historico-peso', async (req, res) => {
     try {
         const historico = await pool.query('SELECT * FROM peso ORDER BY data DESC');
         res.json({ historico: historico.rows });
     } catch (error) {
-        console.error(`Erro ao carregar histórico de peso: ${error.message}`);
-        res.status(500).json({ erro: 'Erro ao carregar histórico de peso' });
+        console.error(`Erro ao carregar hist?rico de peso: ${error.message}`);
+        res.status(500).json({ erro: 'Erro ao carregar hist?rico de peso' });
     }
 });
 
@@ -278,7 +279,7 @@ app.delete('/api/peso/:id', async (req, res) => {
     }
 });
 
-// Inicialização do servidor
+// Inicializa??o do servidor
 app.listen(port, () => {
     logger.info(`Servidor rodando em http://localhost:${port}`);
 });
