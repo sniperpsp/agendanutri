@@ -1,6 +1,25 @@
 ﻿version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 33557788
+      DB_NAME: controle_alimentacao
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app  # Mapeia o diretório local para dentro do contêiner
+    command: ["node", "server.js"]  # Comando para iniciar a aplicação
+
   db:
     image: postgres:15
     container_name: postgres
